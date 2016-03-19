@@ -3,8 +3,9 @@
   font-size: 20px;
   font-family: 'Fira Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
-body {
+html, body {
   background-color: #000;
+  cursor:none;
 }
 #main_canvas {
   margin: 0px;
@@ -14,4 +15,7 @@ body {
   background-color: #000;
   color: #fff;
   overflow:hidden;
+  cursor: none;
 }
+
+* { cursor: none !important; }

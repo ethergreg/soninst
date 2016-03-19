@@ -11,12 +11,12 @@ function readPin(pin){
   var ret = -1
   while(tries < 5){
     ++tries;
-      try{
-    	  var raw = fs.readFileSync('/sys/bus/iio/devices/iio:device0/in_voltage'+pin+'_raw')+"";
-	      console.log(pin+" pin value "+raw);
-	      return raw.trim();
-      }catch(err){
-        console.log(tries+" pin readd err:"+err);
+    try{
+  	  var raw = fs.readFileSync('/sys/bus/iio/devices/iio:device0/in_voltage'+pin+'_raw')+"";
+      //console.log(pin+" pin value "+raw);
+      return raw.trim();
+    }catch(err){
+      console.log(tries+" pin readd err:"+err);
     }
   }
 }

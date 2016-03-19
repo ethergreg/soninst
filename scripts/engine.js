@@ -1,6 +1,9 @@
+/* global Snap */
+/* global mina */
+
 var horizontal= require('./scripts/instruments/horizontal.js');
 var analog = require('./scripts/analog.js');
-var TIMEOUT = 1000;
+var TIMEOUT = 250;
 
 //Oil Pressure
 var OP = {
@@ -49,7 +52,7 @@ var instruments = [OP,OT];
 
 function readData(event){
     var data = JSON.parse(event.data);
-    for(i in instruments){
+    for(var i in instruments){
       var instrument = instruments[i];
       horizontal.setInstVal(instrument, data[instrument.a_pin])
       horizontal.drawInst(instrument);
@@ -58,42 +61,25 @@ function readData(event){
 
 function readAnalogData(data){
 //    var data = JSON.parse(event.data);
-    for(i in instruments){
+    for(var i in instruments){
       var instrument = instruments[i];
-      horizontal.setInstVal(instrument, data[instrument.a_pin])
-      horizontal.drawInst(instrument);
+      if(horizontal.setInstVal(instrument, data[instrument.a_pin])){
+        horizontal.drawInst(instrument);
+      }
     }
 }
-
 
 function getData(){
   var data = analog.getData([OP.a_pin,OT.a_pin])
-    readAnalogData(data);
+  readAnalogData(data);
   setTimeout(getData, TIMEOUT);
-}
-
-//OLD BONE VERSION
-function XgetData(){
-  $.ajax({
-    url: 'analog_data/'+a_pins,
-//    dataType: 'jsonp',
-    success: function(data){
-//      console.log(data);
-      readAnalogData(data);
-    },
-    error: function(err){
-      for(i in err)console.log(err[i]);
-      console.log("ERR:"+err);
-    }
-  });
-  setTimeout(getData, 1000);
 }
 
 var a_pins;
 
 
 $(document).ready(function(){
-  console.log("REALLY READY")
+  document.body.style.cursor = 'none';
   var s = Snap("#ot");
   OT.gauge = s.rect(0,10,0,20).attr({fill: 'yellow', 'opacity': 1.0 });
   s.rect(horizontal.bar(OT,"min"),5,2,31).attr({fill: OT.min.color, 'opacity': 1.0 });
@@ -109,68 +95,65 @@ $(document).ready(function(){
   OP.dvalue = Snap('#opv').text(5,25, '0').attr({'fill':'white'});
 
 
-  Snap('#rpm').text(5,25, '3000').attr({'fill':'white'});
-
-
   a_pins=OP.a_pin+","+OT.a_pin
 
 
-//==============================================================================
+  var last = 0;
+  var MAX_RPM = 4248;
+  var RPM_DIV = 5900;
+  
+  var canvasSize = 200,
+      centre = canvasSize/2,
+      radius = canvasSize*0.8/2,
+      s = Snap('#tach'),
+      path = "",
+      arc = s.path(path),
+      startY = centre-radius,
+      percDiv = document.getElementById('percent'),
+      input = document.getElementById('input');
+  
+  var rpm = 3000;
+  /**
+   * 0 = 0
+   * 4536 rpm = 72
+   *
+   *
+   */
+  function run(rpm) {
+    if(rpm > MAX_RPM)rpm = MAX_RPM;
+    var percent = rpm == 0 ? 0 : rpm/RPM_DIV
+    var start = last;
+    var endpoint = percent*360;
+    last = endpoint;
+    Snap.animate(start, endpoint,   function (val) {
+      arc.remove();
+  
+      //start at 220 degrees
+      var startRadians = Math.PI*(-140)/180;
+      var startx = centre+radius*Math.cos(startRadians);
+      var starty = centre-radius*Math.sin(startRadians);
+      //console.log("startRadians:"+startRadians+" X:"+startx+" Y:"+starty+" center:"+centre+" "+(radius * Math.sin(startRadians))+" D:"+val);
+  
+      var d = val
+      var dr = 220-d;
+      var radians = Math.PI*(dr)/180;
+      var endx = centre + radius*Math.cos(radians);
+      var endy = centre - radius * Math.sin(radians);
+      var largeArc = d > 180 ? 1 : 0;
+      var path = "M"+startx+","+starty+" A"+radius+","+radius+" 0 "+largeArc+",1 "+endx+","+endy;
+      arc = s.path(path);
+      arc.attr({
+        stroke: 'green',
+        fill: 'none',
+        strokeWidth: 20
+      });
+      Snap('#rpm').text(5,25, '3000').attr({'fill':'white'});
+  //    percDiv.innerHTML =    rpm;
+    }, 500, mina.easeinout);
+  }
 
-var last = 0;
-var MAX_RPM = 4248;
-var RPM_DIV = 5900;
-
-var canvasSize = 200,
-    centre = canvasSize/2,
-    radius = canvasSize*0.8/2,
-    s = Snap('#tach'),
-    path = "",
-    arc = s.path(path),
-    startY = centre-radius,
-    runBtn = document.getElementById('run'),
-    percDiv = document.getElementById('percent'),
-    input = document.getElementById('input');
-
-
-/**
- * 0 = 0
- * 4536 rpm = 72
- *
- *
- */
-function run(rpm) {
-  if(rpm > MAX_RPM)rpm = MAX_RPM;
-  var percent = rpm == 0 ? 0 : rpm/RPM_DIV
-  start = last;
-  var endpoint = percent*360;
-  last = endpoint;
-  Snap.animate(start, endpoint,   function (val) {
-    arc.remove();
-
-    //start at 220 degrees
-    var startRadians = Math.PI*(-140)/180;
-    var startx = centre+radius*Math.cos(startRadians);
-    var starty = centre-radius*Math.sin(startRadians);
-    //console.log("startRadians:"+startRadians+" X:"+startx+" Y:"+starty+" center:"+centre+" "+(radius * Math.sin(startRadians))+" D:"+val);
-
-    var d = val
-    var dr = 220-d;
-    var radians = Math.PI*(dr)/180;
-    var endx = centre + radius*Math.cos(radians);
-    var endy = centre - radius * Math.sin(radians);
-    var largeArc = d > 180 ? 1 : 0;
-    var path = "M"+startx+","+starty+" A"+radius+","+radius+" 0 "+largeArc+",1 "+endx+","+endy;
-    arc = s.path(path);
-    arc.attr({
-      stroke: 'green',
-      fill: 'none',
-      strokeWidth: 10
-    });
-//    percDiv.innerHTML =    rpm;
-  }, 500, mina.easeinout);
-}
-
-run(3000);
-getData();
+  run(rpm);
+  getData();
+  
+  
 });

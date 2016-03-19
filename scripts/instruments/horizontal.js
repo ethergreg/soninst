@@ -9,7 +9,9 @@ horizontal.WIDTH=360.0;
 horizontal.setInstVal = function(inst, raw){
   var step = (inst.max_disp - inst.min_disp)/inst.max_raw;
   var value = Math.round(raw * step + inst.min_disp);
+  if(Math.abs(inst.value-value)<2)return false;
   inst.value = value;
+  return true;
 }
 
 

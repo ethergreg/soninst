@@ -1,0 +1,17 @@
+.inst-label {
+  fill: #fff;
+  font-size: 20px;
+  font-family: 'Fira Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+body {
+  background-color: #000;
+}
+#main_canvas {
+  margin: 0px;
+  padding: 0px;
+  max-width:780px;
+  max-height: 420px;
+  background-color: #000;
+  color: #fff;
+  overflow:hidden;
+}

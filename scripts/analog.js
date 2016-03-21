@@ -3,7 +3,7 @@
 
 /*
  * read analog pin
- * seems to be some bug that causes it to choke so try a few times
+ * value not always available so try a few times
  */
 function readPin(pin){
     var fs = require('fs');
@@ -32,5 +32,5 @@ exports.getData = function(pins){
       vals[pin] = Math.round(readPin(pin));
   }
   return vals;
-}
+};
 

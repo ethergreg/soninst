@@ -1,4 +1,3 @@
-
 var config = require('./config.js');
 var analog = require('./analog.js');
 var horizontal = require('./instruments/horizontal.js');
@@ -81,6 +80,7 @@ function getData(){
 
 exports.documentReady = function(){
   var snap = require('snapsvg');
+//  var bs = require('bonescript');
 
   var s = snap("#ot");
   OT.gauge = s.rect(0,10,0,20).attr({fill: 'yellow', 'opacity': 1.0 });

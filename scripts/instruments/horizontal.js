@@ -35,9 +35,6 @@ exports.drawInst = function(inst){
   var color = "green";
   if(inst.value <= inst.min.value)color = inst.min.color;
   if(inst.value >= inst.max.value)color = inst.max.color;
-  //console.log("width:"+w+" G:"+inst.gauge+" COLOR:"+color);
   inst.gauge.animate({width: w, fill: color}, config.ANIMATE_TIMEOUT);
   inst.dvalue.attr({'text': inst.value});
-  //  var labelFill = inst.value <= inst.min_disp ? 'red' : 'white';
-  //  $('#'+inst.id+'l').css('fill', labelFill);
 };

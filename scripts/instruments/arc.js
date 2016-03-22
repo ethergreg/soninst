@@ -1,7 +1,6 @@
-//var config = require('../config.js');
+var config = require('../config.js');
 
 var last = 0;
-var MAX_RPM = 4248;
 var RPM_DIV = 5900;
 
 var canvasSize = 200;
@@ -49,5 +48,5 @@ exports.drawInst = function(inst) {
       });
       snap('#'+inst.id+'l').text(5,25, '3000').attr({'fill':'white'});
   //    percDiv.innerHTML =    rpm;
-    }, 500);
+    }, config.ANIMATE_TIMEOUT);
   }

@@ -6,7 +6,7 @@
  * value not always available so try a few times
  */
 function readPin(pin){
-    var fs = require('fs');
+  var fs = require('fs');
   var tries = 0;
   var ret = -1
   while(tries < 5){

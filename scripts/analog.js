@@ -5,7 +5,7 @@
  * read analog pin
  * value not always available so try a few times
  */
-function readPin(pin){
+exports.readPin = function(pin){
   var fs = require('fs');
   var tries = 0;
   var ret = -1
@@ -16,7 +16,7 @@ function readPin(pin){
       //console.log(pin+" pin value "+raw);
       return raw.trim();
     }catch(err){
-      console.log(tries+" pin readd err:"+err);
+      console.log(tries+" pin read err:"+err);
     }
   }
 }
@@ -29,7 +29,7 @@ exports.getData = function(pins){
   var vals = {};
   for(var i in pins){
     var pin = pins[i];
-      vals[pin] = Math.round(readPin(pin));
+      vals[pin] = Math.round(exports.readPin(pin));
   }
   return vals;
 };

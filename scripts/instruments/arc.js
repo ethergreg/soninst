@@ -3,7 +3,7 @@ var config = require('../config.js');
 var last = 0;
 var RPM_DIV = 5900;
 
-var canvasSize = 200;
+var canvasSize = 280;
 var centre = canvasSize/2;
 var radius = canvasSize*0.8/2;
 
@@ -46,7 +46,8 @@ exports.drawInst = function(inst) {
         fill: 'none',
         strokeWidth: 20
       });
-      snap('#'+inst.id+'l').text(5,25, '3000').attr({'fill':'white'});
+      snap('#'+inst.id+'v').text(5,25, '2750').attr({'fill':'white'});
+      snap('#'+inst.id+'l').text(5,25, 'RPM').attr({'fill':'white'});
   //    percDiv.innerHTML =    rpm;
     }, config.ANIMATE_TIMEOUT);
   }

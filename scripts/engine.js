@@ -8,10 +8,11 @@ var txxt = require('./instruments/text.js');
 var OP = {
   "id": "op",
   'a_pin': '3',
+  'ref_val': 0,
+  'ref_disp': 0.0,
+  'step':0.03,
   "min_disp": 0.0,
   "max_disp": 100.0,
-  "min_raw": 0,
-  "max_raw": 4000,
   "min": {
     "value": 20,
     "color": "red"
@@ -30,16 +31,17 @@ var OP = {
 var OT = {
   "id": "ot",
   'a_pin': '5',
-  "min_disp": 60.0,
-  "max_disp": 260.0,
-  "min_raw": 0,
-  "max_raw": 4000,
+  'ref_val': 1927,
+  'ref_disp': 70.0,
+  "min_disp": 32.0,
+  "max_disp": 212.0,
+  "step":0.0749340369,
   "min": {
     "value": 100,
     "color": "yellow"
   },
   "max": {
-    "value": 220,
+    "value": 260,
     "color": "red"
   },
   "value": 60,
@@ -48,9 +50,12 @@ var OT = {
   'refresh': function(){horizontal.refresh(this);}
 };
 
+//Fuel Qty
 var FU = {
   "id": "fu",
   'a_pin': '5',
+  'ref_val': 0,
+  'ref_disp': 0.0,
   "min_disp": 0.0,
   "max_disp": 16.0,
   "min_raw": 0,
@@ -65,10 +70,12 @@ var FU = {
   'refresh': function(){horizontal.refresh(this);}
 };
 
+//Voltage
 var VO = {
   "id": "vo",
   "value": 0,
-  'refresh': function(){txxt.refresh(this);}
+  'refresh': function(){txxt.refresh(this);},
+  'dvalue': null 
 };
 
 var TACH = {
@@ -120,27 +127,27 @@ exports.documentReady = function(){
 //  var bs = require('bonescript');
 
   var s = snap("#ot");
-  OT.gauge = s.rect(0,0,0,30).attr({fill: 'yellow', 'opacity': 1.0 });
-  s.rect(horizontal.bar(OT,"min"),0,5,30).attr({fill: OT.min.color, 'opacity': 1.0 });
-  s.rect(horizontal.bar(OT,"max"),0,5,30).attr({fill: OT.max.color, 'opacity': 1.0 });
+  OT.gauge = s.rect(0,4,0,30).attr({fill: 'yellow', 'opacity': 1.0 });
+  s.rect(horizontal.bar(OT,"min"),0,5,38).attr({fill: OT.min.color, 'opacity': 1.0 });
+  s.rect(horizontal.bar(OT,"max"),0,5,38).attr({fill: OT.max.color, 'opacity': 1.0 });
   snap('#otl').text(5,25, 'Oil Temp').attr({'fill':'white'});
   OT.dvalue = snap('#otv').text(5,25, '0').attr({'fill':'white'});
 
   s = snap("#op");
-  OP.gauge = s.rect(0,0,0,30).attr({fill: 'green', 'opacity': 1.0 });
-  s.rect(horizontal.bar(OP,"min"),0,5,30).attr({fill: OP.min.color, 'opacity': 1.0 });
-  s.rect(horizontal.bar(OP,"max"),0,5,30).attr({fill: OP.max.color, 'opacity': 1.0 });
+  OP.gauge = s.rect(0,4,0,30).attr({fill: 'green', 'opacity': 1.0 });
+  s.rect(horizontal.bar(OP,"min"),0,5,38).attr({fill: OP.min.color, 'opacity': 1.0 });
+  s.rect(horizontal.bar(OP,"max"),0,5,38).attr({fill: OP.max.color, 'opacity': 1.0 });
   snap('#opl').text(5,25, 'Oil Press').attr({'fill':'white'});
   OP.dvalue = snap('#opv').text(25,25, '0').attr({'fill':'white'});
 
   s = snap("#fu");
-  FU.gauge = s.rect(0,0,0,30).attr({fill: 'green', 'opacity': 1.0 });
-  s.rect(horizontal.bar(OP,"min"),0,5,30).attr({fill: OP.min.color, 'opacity': 1.0 });
+  FU.gauge = s.rect(0,4,0,30).attr({fill: 'green', 'opacity': 1.0 });
+  s.rect(horizontal.bar(OP,"min"),0,5,38).attr({fill: OP.min.color, 'opacity': 1.0 });
   snap('#ful').text(5,25, 'Fuel Gal').attr({'fill':'white'});
   FU.dvalue = snap('#fuv').text(25,25, '0').attr({'fill':'white'});
   
   snap('#vol').text(2,25, 'Volts').attr({'fill':'white'});
-  snap('#vov').text(2,25, (analog.readPin('1')/206.81).toFixed(1)).attr({'fill':'white'});
+  VO.dvalue = snap('#vov').text(2,25, (analog.readPin('1')/206.81).toFixed(1)).attr({'fill':'white'});
   
   snap('#aml').text(2,25, 'Amps').attr({'fill':'white'});
   snap('#amv').text(2,25, '-2.3').attr({'fill':'red'});

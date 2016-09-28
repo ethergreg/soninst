@@ -43,12 +43,17 @@ var drawInst = function(inst){
 
 
 exports.refresh = function(inst){
-  var step = (inst.max_disp - inst.min_disp)/inst.max_raw;
   var raw = analog.readPin(inst.a_pin);
-  var value = Math.round(raw * step + inst.min_disp);
-  if(inst.id == 'fu')value = 9;
+  if(inst.id == "ot")console.log("RAW "+inst.id+" "+raw);
+  var adj = raw - inst.ref_val;
+  var value = Math.round(adj * inst.step + inst.ref_disp);
+  //let's try an average to slow down changes
+  value = Math.round((value + inst.value) / 2);
+  if(inst.id == "ot")console.log("VAL "+inst.id+" "+value);
   //don't redraw if within flap limit
   if(Math.abs(inst.value-value)<FLAP_LIMIT)return;
+  // until we have a fuel level transducer
+  if(inst.id == 'fu')value = 9;
   inst.value = value;  
   drawInst(inst);
-}
+};
